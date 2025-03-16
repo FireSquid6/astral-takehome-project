@@ -1,6 +1,7 @@
 
-export default function Home() {
+export default () => {
   return (
     <p>Hello, world!</p>
   );
 }
+

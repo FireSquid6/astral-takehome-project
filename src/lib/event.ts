@@ -1,4 +1,3 @@
-
 export interface Event {
   id: string;
   title: string;
@@ -8,6 +7,16 @@ export interface Event {
 }
 
 
+
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).replace(",", " of");
+}
 
 export function formatMilitaryTime(militaryTime: string, useTwelveHour: boolean = true): string {
   if (!/^\d{4}$/.test(militaryTime)) {

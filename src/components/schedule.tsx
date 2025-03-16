@@ -10,7 +10,7 @@ export function Schedule({ date, events }: { date: string, events: Event[] }) {
   return (
     <div className="w-full max-w-2xl mx-auto p-4">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        {formatDate(date)}
+        {date}
       </h2>
       {sortedEvents.length > 0 ? (
         <div className="space-y-4">

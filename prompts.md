@@ -46,3 +46,18 @@ export function DayView(props: { date: string, events: Event[] }) {
 The date is provided in the format `YYYY-MM-DD`. Make a helper function to convert it to the format "DD of (month), YYYY". The day view should display a list of EventViews sorted by time (soonest at the start).
 
 ---
+
+Now we would like to display an entire week. Our function should look like:
+```ts
+export function WeekView({ events }: { events: EventsByDate }) {
+
+}
+```
+Also the `EventsByDate` is (using the same Event we have always had):
+```ts
+export interface EventsByDate {
+  [date: string]: Event[];
+}
+```
+
+This should behave differently on mobile and desktop. On mobile, there should be a header showing buttons for each day at the top. When each button is clicked, that DayView is swapped to. On desktop, the entire week is shown at a time.

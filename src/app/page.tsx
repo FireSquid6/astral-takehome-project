@@ -1,18 +1,30 @@
 "use client"
-import { Schedule } from "@/components/schedule";
+import { WeekView } from "@/components/week";
+import { getCurrentWeek, getDaysInWeek } from "@/lib/date";
+import type { EventsByDate } from "@/lib/event";
 import { eventsAtom } from "@/lib/state";
 import { useAtomValue } from "jotai";
+import { useState } from "react";
 
 export default () => {
   const events = useAtomValue(eventsAtom);
-  const dates = Object.getOwnPropertyNames(events);
+
+  // we start here since that's where the mock data is
+  // could easily be adjusted to start at the current
+  // date by default
+  const [week, setWeek] = useState<number>(11);
+  const [year, setYear] = useState<number>(2024);
+
+
+  const datesInWeek = getDaysInWeek(year, week);
+  
+  const eventsForThisWeek: EventsByDate = {};
+  for (const date of datesInWeek) {
+    eventsForThisWeek[date] = events[date] ?? [];
+  }
 
   return (
-    <div className="flex flex-col">
-      {dates.map((date, i) => (
-        <Schedule key={i} date={date} events={events[date]} />
-      ))}
-    </div>
+    <WeekView events={eventsForThisWeek} />
   );
 }
 

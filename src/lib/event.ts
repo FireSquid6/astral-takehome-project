@@ -6,18 +6,6 @@ export interface Event {
   time: string; // in military time (i.e. 0900, 1251, etc.)
 }
 
-
-
-export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-
-  return date.toLocaleDateString("en-US", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).replace(",", " of");
-}
-
 export function formatMilitaryTime(militaryTime: string, useTwelveHour: boolean = true): string {
   if (!/^\d{4}$/.test(militaryTime)) {
     throw new Error('Military time must be exactly 4 digits');

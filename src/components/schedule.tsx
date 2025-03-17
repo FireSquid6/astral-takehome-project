@@ -2,6 +2,7 @@
 import type { Event } from "@/lib/event";
 import { formatMilitaryTime } from "@/lib/event";
 import { formatDate } from "@/lib/date";
+import Link from "next/link";
 
 export function Schedule({ date, events }: { date: string, events: Event[] }) {
   const sortedEvents = [...events].sort((a, b) => {
@@ -37,7 +38,7 @@ export function EventView({ event }: { event: Event }) {
 
   return (
     <div draggable className="rounded-lg overflow-hidden shadow-md bg-white w-full max-w-sm transition-transform duration-200 hover:scale-102 hover:shadow-lg">
-      <div className="relative">
+      <Link href={`/${event.id}`} className="relative">
         <img
           src={event.imageUrl}
           alt={event.title}
@@ -47,7 +48,7 @@ export function EventView({ event }: { event: Event }) {
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-gray-800 font-medium px-3 py-1 rounded-full shadow-sm">
           {formatMilitaryTime(event.time)}
         </div>
-      </div>
+      </Link>
 
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-1">

@@ -2,6 +2,8 @@
 import { EventsByDate } from "@/lib/event";
 import { useState, useEffect } from "react";
 import { Schedule } from "./schedule";
+import { useAtom } from "jotai";
+import { isMobileAtom } from "@/lib/state";
 
 
 function formatDayButton(dateString: string): string {
@@ -20,7 +22,7 @@ export function WeekView({ events}: { events: EventsByDate }) {
   const dates = Object.keys(events);
 
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || "");
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useAtom(isMobileAtom);
 
 
   useEffect(() => {
@@ -45,7 +47,6 @@ export function WeekView({ events}: { events: EventsByDate }) {
 
   return (
     <div className="w-full mx-auto">
-      {/* Mobile View with Day Selector */}
       {isMobile && (
         <>
           <div className="flex w-full overflow-x-auto">

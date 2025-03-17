@@ -24,7 +24,7 @@ export function Schedule({ date, events }: { date: string, events: Event[] }) {
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
-          Nothing for today. Enjoy some rest!
+          No events for today. Enjoy your rest!
         </div>
       )}
     </div>
@@ -36,7 +36,7 @@ export function Schedule({ date, events }: { date: string, events: Event[] }) {
 export function EventView({ event }: { event: Event }) {
 
   return (
-    <div className="rounded-lg overflow-hidden shadow-md bg-white w-full max-w-sm transition-transform duration-200 hover:scale-102 hover:shadow-lg">
+    <div draggable className="rounded-lg overflow-hidden shadow-md bg-white w-full max-w-sm transition-transform duration-200 hover:scale-102 hover:shadow-lg">
       <div className="relative">
         <img
           src={event.imageUrl}

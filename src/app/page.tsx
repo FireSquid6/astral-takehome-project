@@ -28,10 +28,14 @@ export default () => {
 
   const addEvent = (event: Omit<Event, "id">, date: string) => {
     const id = uuid();
+    const newEvents = {...events};
 
-    console.log(id);
-    console.log(event);
-    console.log(date);
+    if (newEvents[date] === undefined) {
+      newEvents[date] = [{ ...event, id }];
+    } else {
+      newEvents[date].push({ ...event, id });
+    }
+    setEvents(newEvents);
   }
 
   return (

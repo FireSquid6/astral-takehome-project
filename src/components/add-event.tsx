@@ -22,10 +22,10 @@ export function AddEventModal({ isOpen, onClose, onAddEvent, initialDate }: AddE
 
   useEffect(() => {
     if (isOpen) {
-      setTitle('');
-      setDescription('');
-      setImageUrl('');
-      setTime('0900');
+      setTitle("");
+      setDescription("");
+      setImageUrl("https://placehold.co/600x400");
+      setTime("0900");
 
       setTimeout(() => {
         initialFocusRef.current?.focus();
@@ -35,13 +35,13 @@ export function AddEventModal({ isOpen, onClose, onAddEvent, initialDate }: AddE
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === "Escape" && isOpen) {
         onClose();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
   useEffect(() => {
@@ -51,12 +51,12 @@ export function AddEventModal({ isOpen, onClose, onAddEvent, initialDate }: AddE
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, onClose]);
 
   const convertToMilitaryTime = (timeString: string): string => {
-    const [hours, minutes] = timeString.split(':');
+    const [hours, minutes] = timeString.split(":");
     return `${hours}${minutes}`;
   };
 
@@ -70,7 +70,7 @@ export function AddEventModal({ isOpen, onClose, onAddEvent, initialDate }: AddE
     e.preventDefault();
 
     if (!title.trim() || !description.trim() || !imageUrl.trim() || !time) {
-      alert('Please fill out all fields');
+      alert("Please fill out all fields");
       return;
     }
 

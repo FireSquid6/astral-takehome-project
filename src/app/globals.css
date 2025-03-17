@@ -1,2 +1,6 @@
 @import "tailwindcss";
 
+
+.icon-button {
+  @apply m-4
+}

@@ -42,7 +42,6 @@ export function EventDetails({ event }: { event: Event }) {
         </div>
       </div>
 
-      {/* Event details */}
       <div className="p-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">
           {event.title}
@@ -57,7 +56,6 @@ export function EventDetails({ event }: { event: Event }) {
           </p>
         </div>
 
-        {/* Additional metadata could go here */}
         <div className="border-t pt-4 mt-4">
           <div className="flex justify-between items-center">
             <div>

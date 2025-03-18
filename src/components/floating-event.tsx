@@ -3,7 +3,6 @@ import { formatMilitaryTime } from "@/lib/event";
 import { useAtom, useAtomValue } from "jotai";
 
 export function FloatingEvent() {
-  // TODO - to animate this make a boolean that can be triggered to make it fade out
   const box = useAtomValue(pickedUpBoxAtom);
   const [event, setEvent] = useAtom(pickedUpEventAtom);
 

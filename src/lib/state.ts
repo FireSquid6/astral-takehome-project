@@ -13,8 +13,9 @@ interface ElementRect {
 }
 
 export const eventsAtom = atom(startingEvents);
-export const pickedUpEventAtom = atom<Event | null>(null);
-export const pickedUpBoxAtom = atom<ElementRect>({ top: 0, left: 0, width: 0, height: 0 });
 export const isMobileAtom = atom<boolean>(false);
 
+// handle pickup up and dropping events
+export const pickedUpEventAtom = atom<Event | null>(null);
+export const pickedUpBoxAtom = atom<ElementRect>({ top: 0, left: 0, width: 0, height: 0 });
 

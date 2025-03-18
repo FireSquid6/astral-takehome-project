@@ -1,6 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import type { Event } from "@/lib/event";
 
+function convertToMilitaryTime(timeString: string): string {
+  const [hours, minutes] = timeString.split(":");
+  return `${hours}${minutes}`;
+};
+
+function convertFromMilitaryTime(militaryTime: string): string {
+  const hours = militaryTime.substring(0, 2);
+  const minutes = militaryTime.substring(2, 4);
+  return `${hours}:${minutes}`;
+};
 
 interface AddEventModalProps {
   isOpen: boolean;
@@ -55,16 +65,7 @@ export function AddEventModal({ isOpen, onClose, onAddEvent, initialDate }: AddE
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen, onClose]);
 
-  const convertToMilitaryTime = (timeString: string): string => {
-    const [hours, minutes] = timeString.split(":");
-    return `${hours}${minutes}`;
-  };
 
-  const convertFromMilitaryTime = (militaryTime: string): string => {
-    const hours = militaryTime.substring(0, 2);
-    const minutes = militaryTime.substring(2, 4);
-    return `${hours}:${minutes}`;
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,6 +87,7 @@ export function AddEventModal({ isOpen, onClose, onAddEvent, initialDate }: AddE
 
   if (!isOpen) return null;
 
+  // TODO - save these class names in globals.css
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-fade-in">
       <div

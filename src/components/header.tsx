@@ -1,14 +1,14 @@
 import React from 'react';
 
 interface WeekHeaderProps {
-  weekNumber: number;
-  year: number;
+  first: string,
+  last: string,
   onPrevious: () => void;
   onNext: () => void;
   onAddEvent: () => void;
 }
 
-export function WeekHeader({ weekNumber, year, onPrevious, onNext, onAddEvent }: WeekHeaderProps) {
+export function WeekHeader({ first, last, onPrevious, onNext, onAddEvent }: WeekHeaderProps) {
   return (
     <header className="flex items-center justify-between p-4 bg-white border-b">
       <div className="flex items-center">
@@ -35,7 +35,7 @@ export function WeekHeader({ weekNumber, year, onPrevious, onNext, onAddEvent }:
         </div>
         
         <h1 className="text-xl font-semibold">
-          Week {weekNumber} of {year}
+          Week of {first} to {last}
         </h1>
       </div>
       

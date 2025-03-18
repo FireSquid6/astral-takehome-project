@@ -2,7 +2,7 @@
 import { AddEventModal } from "@/components/add-event";
 import { WeekHeader } from "@/components/header";
 import { WeekView } from "@/components/week";
-import { getDaysInWeek } from "@/lib/date";
+import { getDaysInWeek, getWeekOf } from "@/lib/date";
 import type { EventsByDate, Event } from "@/lib/event";
 import { eventsAtom } from "@/lib/state";
 import { useAtom } from "jotai";
@@ -12,14 +12,14 @@ import { v4 as uuid } from "uuid";
 export default () => {
   const [events, setEvents] = useAtom(eventsAtom);
 
+
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   // we start here since that's where the mock data is
   // could easily be adjusted to start at the current
   // date by default
-  const [week, setWeek] = useState<number>(11);
-  const [year, setYear] = useState<number>(2024);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
-
-  const datesInWeek = getDaysInWeek(year, week);
+  const [datesInWeek, setDatesInWeek] = useState<string[]>(
+    getWeekOf(new Date("2024-03-14"))
+  )
 
   const eventsForThisWeek: EventsByDate = {};
   for (const date of datesInWeek) {
@@ -52,23 +52,18 @@ export default () => {
       <div className="flex flex-col">
 
         <WeekHeader
-          weekNumber={week}
-          year={year}
+          first={datesInWeek[0]}
+          last={datesInWeek[6]}
           onPrevious={() => {
-            if (week - 1 > 0) {
-              setWeek(week - 1)
-            } else {
-              setWeek(52);
-              setYear(year - 1)
-            }
+            const prevSunday = new Date(datesInWeek[0]);
+            prevSunday.setUTCDate(prevSunday.getUTCDate() - 7);
+            setDatesInWeek(getWeekOf(prevSunday));
           }}
           onNext={() => {
-            if (week + 1 <= 52) {
-              setWeek(week + 1)
-            } else {
-              setWeek(1);
-              setYear(year + 1);
-            }
+            const nextSunday = new Date(datesInWeek[0]);
+            console.log(nextSunday);
+            nextSunday.setUTCDate(nextSunday.getUTCDate() + 7);
+            setDatesInWeek(getWeekOf(nextSunday));
           }}
           onAddEvent={() => {
             setModalOpen(true);

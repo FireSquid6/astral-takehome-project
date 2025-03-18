@@ -10,7 +10,7 @@ function formatDayButton(dateString: string): string {
   const date = new Date(dateString);
   const weekdays = ["S", "M", "Tu", "W", "Th", "F", "S"]
   let dayOfMonth = date.getUTCDate().toString();
-  
+
   if (dayOfMonth.length === 1) {
     dayOfMonth = "0" + dayOfMonth;
   }
@@ -18,7 +18,7 @@ function formatDayButton(dateString: string): string {
   return weekdays[date.getUTCDay()] + " " + dayOfMonth;
 };
 
-export function WeekView({ events}: { events: EventsByDate }) {
+export function WeekView({ events }: { events: EventsByDate }) {
   const dates = Object.keys(events);
 
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || "");
@@ -43,7 +43,6 @@ export function WeekView({ events}: { events: EventsByDate }) {
       setSelectedDate(dates[0]);
     }
   }, [dates, selectedDate]);
-
 
   return (
     <div className="w-full mx-auto">

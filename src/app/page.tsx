@@ -3,7 +3,7 @@ import { AddEventModal } from "@/components/add-event";
 import { FloatingEvent } from "@/components/floating-event";
 import { WeekHeader } from "@/components/header";
 import { WeekView } from "@/components/week";
-import { getDaysInWeek, getWeekOf } from "@/lib/date";
+import { getWeekOf } from "@/lib/date";
 import type { EventsByDate, Event } from "@/lib/event";
 import { eventsAtom } from "@/lib/state";
 import { useAtom } from "jotai";
@@ -13,6 +13,9 @@ import { v4 as uuid } from "uuid";
 export default () => {
   const [events, setEvents] = useAtom(eventsAtom);
 
+  // slide number is incremented so that we can always replay the animation
+  const [lastSlide, setLastSlide] = useState<undefined | "left" | "right">(undefined);
+  const [slideNumber, setSlideNumber] = useState<number>(0);
 
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   // we start here since that's where the mock data is
@@ -60,18 +63,23 @@ export default () => {
             const prevSunday = new Date(datesInWeek[0]);
             prevSunday.setUTCDate(prevSunday.getUTCDate() - 7);
             setDatesInWeek(getWeekOf(prevSunday));
+
+            setLastSlide("left");
+            setSlideNumber(slideNumber + 1);
           }}
           onNext={() => {
             const nextSunday = new Date(datesInWeek[0]);
-            console.log(nextSunday);
             nextSunday.setUTCDate(nextSunday.getUTCDate() + 7);
             setDatesInWeek(getWeekOf(nextSunday));
+
+            setLastSlide("right");
+            setSlideNumber(slideNumber + 1);
           }}
           onAddEvent={() => {
             setModalOpen(true);
           }}
         />
-        <WeekView events={eventsForThisWeek} />
+        <WeekView events={eventsForThisWeek} slideDirection={lastSlide} slideNumber={slideNumber} />
       </div>
     </>
   );

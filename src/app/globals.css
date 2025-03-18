@@ -30,9 +30,36 @@
   }
 }
 
+@keyframes week-slide-left {
+  0% {
+    transform: translateX(30px);
+  },
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes week-slide-right {
+  0% {
+    transform: translateX(-30px);
+  },
+  100% {
+    transform: translateX(0);
+  }
+}
+
 .top-animation {
   animation: slide-in-from-top 200ms forwards;
   transform: translateY(-50px);
   opacity: 0;
+}
+
+
+.week-slide-right {
+  animation: week-slide-right 100ms forwards;
+}
+
+.week-slide-left {
+  animation: week-slide-left 100ms forwards;
 }
 

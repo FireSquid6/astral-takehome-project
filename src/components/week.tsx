@@ -1,6 +1,6 @@
 "use client"
 import { EventsByDate } from "@/lib/event";
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Schedule } from "./schedule";
 import { useAtom } from "jotai";
 import { isMobileAtom } from "@/lib/state";
@@ -18,11 +18,35 @@ function formatDayButton(dateString: string): string {
   return weekdays[date.getUTCDay()] + " " + dayOfMonth;
 };
 
-export function WeekView({ events }: { events: EventsByDate }) {
+export function WeekView({ events, slideDirection, slideNumber }: { events: EventsByDate, slideDirection?: "left" | "right", slideNumber?: number }) {
   const dates = Object.keys(events);
 
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || "");
   const [isMobile, setIsMobile] = useAtom(isMobileAtom);
+  const desktopRef = useRef<HTMLDivElement | null>(null);
+
+  const animationClass = slideDirection === undefined ? "" : `week-slide-${slideDirection}`;
+
+  const playAnimation = () => {
+    const element = desktopRef.current;
+    if (element === null) {
+      return;
+    }
+
+
+    const animations = element.getAnimations();
+
+    for (const animation of animations) {
+      animation.cancel();
+      animation.play();
+    }
+  }
+
+  useEffect(() => {
+    if (slideDirection !== undefined) {
+      playAnimation();
+    }
+  }, [slideDirection, slideNumber]);
 
 
   useEffect(() => {
@@ -44,8 +68,10 @@ export function WeekView({ events }: { events: EventsByDate }) {
     }
   }, [dates, selectedDate]);
 
+
+
   return (
-    <div className="w-full mx-auto">
+    <div className="mx-auto">
       {isMobile && (
         <>
           <div className="flex w-full overflow-x-auto">
@@ -76,7 +102,7 @@ export function WeekView({ events }: { events: EventsByDate }) {
 
       {/* Desktop View with All Days */}
       {!isMobile && (
-        <div className="flex flex-row">
+        <div ref={desktopRef} className={`flex flex-row ${animationClass}`}>
           {dates.map((date) => (
             <div key={date} className="pb-6 mb-6">
               <Schedule date={date} events={events[date]} />

@@ -1,9 +1,14 @@
 import { atom } from "jotai";
 import { Event, startingEvents } from "./event";
 
-// While using "Atom" as a suffix to each of these names seems redundant
-// it's actually helpful
+// handled
+export const isMobileAtom = atom<boolean>(false);
 
+// core state for all events
+export const eventsAtom = atom(startingEvents);
+
+// handle pickup up and dropping events
+export const pickedUpEventAtom = atom<Event | null>(null);
 // we would use the dom rect here but it doesn't work with next js
 interface ElementRect {
   top: number;
@@ -12,10 +17,6 @@ interface ElementRect {
   height: number;
 }
 
-export const eventsAtom = atom(startingEvents);
-export const isMobileAtom = atom<boolean>(false);
-
-// handle pickup up and dropping events
-export const pickedUpEventAtom = atom<Event | null>(null);
 export const pickedUpBoxAtom = atom<ElementRect>({ top: 0, left: 0, width: 0, height: 0 });
+
 

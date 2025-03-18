@@ -2,7 +2,7 @@
 import { EventsByDate } from "@/lib/event";
 import { useState, useRef, useEffect } from "react";
 import { Schedule } from "./schedule";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
 import { isMobileAtom } from "@/lib/state";
 
 
@@ -22,7 +22,7 @@ export function WeekView({ events, slideDirection, slideNumber }: { events: Even
   const dates = Object.keys(events);
 
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || "");
-  const [isMobile, setIsMobile] = useAtom(isMobileAtom);
+  const isMobile = useAtomValue(isMobileAtom);
   const desktopRef = useRef<HTMLDivElement | null>(null);
 
   const animationClass = slideDirection === undefined ? "" : `week-slide-${slideDirection}`;
@@ -49,18 +49,7 @@ export function WeekView({ events, slideDirection, slideNumber }: { events: Even
   }, [slideDirection, slideNumber]);
 
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    }
-  }, []);
 
   useEffect(() => {
     if (dates.length > 0 && !dates.includes(selectedDate)) {

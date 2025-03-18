@@ -1,3 +1,4 @@
+"use client"
 import { pickedUpEventAtom, pickedUpBoxAtom } from "@/lib/state";
 import { formatMilitaryTime } from "@/lib/event";
 import { useAtom, useAtomValue } from "jotai";

@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface WeekHeaderProps {
   first: string,
   last: string,

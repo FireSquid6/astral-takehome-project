@@ -1,5 +1,6 @@
 "use client"
 import { AddEventModal } from "@/components/add-event";
+import { FloatingEvent } from "@/components/floating-event";
 import { WeekHeader } from "@/components/header";
 import { WeekView } from "@/components/week";
 import { getDaysInWeek, getWeekOf } from "@/lib/date";
@@ -40,6 +41,7 @@ export default () => {
 
   return (
     <>
+      <FloatingEvent />
       <AddEventModal
         isOpen={modalOpen}
         onAddEvent={addEvent}

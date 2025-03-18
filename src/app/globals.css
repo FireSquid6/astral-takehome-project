@@ -4,3 +4,21 @@
 .icon-button {
   @apply m-4
 }
+
+.rotate-animation {
+  animation: rotate-back-forth 200ms ease-in-out infinite;
+  transform-origin: center;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes rotate-back-forth {
+  0% {
+    transform: rotate(-1deg);
+  }
+  50% {
+    transform: rotate(1deg);
+  }
+  100% {
+    transform: rotate(-1deg);
+  }
+}

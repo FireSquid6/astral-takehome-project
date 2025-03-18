@@ -65,7 +65,7 @@ export default () => {
             setDatesInWeek(getWeekOf(prevSunday));
 
             setLastSlide("left");
-            setSlideNumber(slideNumber + 1);
+            setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);
           }}
           onNext={() => {
             const nextSunday = new Date(datesInWeek[0]);
@@ -73,7 +73,7 @@ export default () => {
             setDatesInWeek(getWeekOf(nextSunday));
 
             setLastSlide("right");
-            setSlideNumber(slideNumber + 1);
+            setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);
           }}
           onAddEvent={() => {
             setModalOpen(true);

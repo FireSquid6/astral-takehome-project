@@ -1,3 +1,4 @@
+"use client"
 import type { Event } from "@/lib/event";
 import { formatMilitaryTime } from "@/lib/event";
 import Link from "next/link";

@@ -47,17 +47,20 @@ export function Schedule({ date, events }: { date: string, events: Event[] }) {
   return (
     <div className="min-w-[250x] max-w-[250px] mx-auto p-4">
       <button disabled={pickedUp === null} onClick={onDropTo}>
-        <h2 className={`text-2xl font-bold mb-6 transition-all ${
-          pickedUp === null ? "text-gray-800" : "border-b-2 text-blue-400 hover:scale-105 hover:text-blue-500"
-        }`}>
+        <h2 className={`text-2xl font-bold mb-6 transition-all ${pickedUp === null ? "text-gray-800" : "border-b-2 text-blue-400 hover:scale-105 hover:text-blue-500"
+          }`}>
           {formatDate(date)}
         </h2>
       </button>
       {sortedEvents.length > 0 ? (
         <div className="space-y-4">
           {
-            sortedEvents.map((event) => (
-              <EventView key={event.id} event={event} />
+            sortedEvents.map((event, i) => (
+              <div key={i} className="top-animation" style={{
+                animationDelay: `${100 * i}ms`,
+              }}>
+                <EventView event={event} />
+              </div>
             ))
           }
 

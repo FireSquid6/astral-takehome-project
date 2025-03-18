@@ -53,9 +53,7 @@ export function Schedule({ date, events }: { date: string, events: Event[] }) {
         <div className="space-y-4">
           {
             sortedEvents.map((event, i) => (
-              <div key={i} className="top-animation" style={{
-                animationDelay: `${100 * i}ms`,
-              }}>
+              <div key={i} className="top-animation">
                 <EventCard event={event} />
               </div>
             ))

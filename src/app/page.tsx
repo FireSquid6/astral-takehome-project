@@ -60,17 +60,18 @@ export default () => {
           first={datesInWeek[0]}
           last={datesInWeek[6]}
           onPrevious={() => {
-            const prevSunday = new Date(datesInWeek[0]);
-            prevSunday.setUTCDate(prevSunday.getUTCDate() - 7);
-            setDatesInWeek(getWeekOf(prevSunday));
+            const prevMonday = new Date(datesInWeek[0]);
+            prevMonday.setUTCDate(prevMonday.getUTCDate() - 8);
+            setDatesInWeek(getWeekOf(prevMonday));
 
             setLastSlide("left");
             setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);
           }}
           onNext={() => {
-            const nextSunday = new Date(datesInWeek[0]);
-            nextSunday.setUTCDate(nextSunday.getUTCDate() + 7);
-            setDatesInWeek(getWeekOf(nextSunday));
+            const nextMonday = new Date(datesInWeek[0]);
+            nextMonday.setUTCDate(nextMonday.getUTCDate() + 8);
+            console.log(nextMonday);
+            setDatesInWeek(getWeekOf(nextMonday));
 
             setLastSlide("right");
             setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);

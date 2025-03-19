@@ -1,8 +1,7 @@
 "use client"
 import type { Event } from "@/lib/event";
 import { formatMilitaryTime } from "@/lib/event";
-import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useAtom } from "jotai";
 import { pickedUpBoxAtom, pickedUpEventAtom } from "@/lib/state";
 import { useRouter } from "next/navigation";
@@ -13,7 +12,7 @@ export function EventCard({ event, date }: { event: Event, date: string }) {
   const href = `/${event.id}?backto=${date}`;
   const router = useRouter();
 
-  router.prefetch(href)
+
 
   const ref = useRef<HTMLDivElement | null>(null);
   const pickUp = () => {
@@ -28,6 +27,10 @@ export function EventCard({ event, date }: { event: Event, date: string }) {
     });
     setPickedUpEvent(event);
   }
+
+  useEffect(() => {
+    router.prefetch(href)
+  }, [router]);
 
   const linkClicked = () => {
     const element = ref.current!;

@@ -4,7 +4,7 @@ import { formatMilitaryTime } from "@/lib/event";
 
 export function EventDetails({ event }: { event: Event }) {
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white min-h-screen flex flex-col">
+    <div className="w-full max-w-4xl mx-auto bg-white min-h-screen flex flex-col fade-in-animation">
       <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm p-4 border-b">
         <Link
           href="/"
@@ -30,7 +30,7 @@ export function EventDetails({ event }: { event: Event }) {
         </Link>
       </div>
 
-      <div className="w-full relative bg-gray-100">
+      <div className="w-full relative bg-gray-100 expand-to-fill-animation">
         <img
           src={event.imageUrl}
           alt={event.title}

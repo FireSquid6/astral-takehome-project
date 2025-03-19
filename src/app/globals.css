@@ -1,8 +1,55 @@
 @import "tailwindcss";
 
+@keyframes expand-out {
+  0% {
+    opacity: 1;
+    tansform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(4);
+  }
+}
+
+.expand-animation {
+  animation: expand-out 200ms forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-in-animation {
+  animation: fade-in 200ms forwards;
+}
+
+@keyframes expand-to-fill {
+  0% {
+    transform: scale(0.7);
+    border-radius: 0px;
+  }
+  50% {
+    transform: scale(1.1);
+    border-radius: 32px;
+  }
+  100% {
+    border-radius: 0px;
+    transform: scale(1);
+  }
+
+}
+
+.expand-to-fill-animation {
+  animation: expand-to-fill 200ms forwards;
+}
 
 .icon-button {
-  @apply m-4
+  @apply m-4;
 }
 
 .rotate-animation {
@@ -33,7 +80,7 @@
 @keyframes week-slide-left {
   0% {
     transform: translateX(30px);
-  },
+  }
   100% {
     transform: translateX(0);
   }
@@ -42,7 +89,7 @@
 @keyframes week-slide-right {
   0% {
     transform: translateX(-30px);
-  },
+  }
   100% {
     transform: translateX(0);
   }
@@ -62,4 +109,6 @@
 .week-slide-left {
   animation: week-slide-left 100ms forwards;
 }
+
+
 

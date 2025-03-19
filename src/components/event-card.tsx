@@ -5,17 +5,16 @@ import Link from "next/link";
 import { useRef } from "react";
 import { useAtom } from "jotai";
 import { pickedUpBoxAtom, pickedUpEventAtom } from "@/lib/state";
+import { useRouter } from "next/navigation";
 
-export function EventCard({ event }: { event: Event }) {
+export function EventCard({ event, date }: { event: Event, date: string }) {
   const [_, setPickedUpBox] = useAtom(pickedUpBoxAtom);
   const [pickedUpEvent, setPickedUpEvent] = useAtom(pickedUpEventAtom);
+  const router = useRouter();
 
   const ref = useRef<HTMLDivElement | null>(null);
   const pickUp = () => {
-    const element = ref.current
-    if (element === null) {
-      throw new Error("you forgot to assign the ref");
-    }
+    const element = ref.current!;
 
     const box = element.getBoundingClientRect();
     setPickedUpBox({
@@ -27,18 +26,34 @@ export function EventCard({ event }: { event: Event }) {
     setPickedUpEvent(event);
   }
 
+  const linkClicked = () => {
+    const element = ref.current!;
+    element.classList.add("expand-animation");
+
+    for (const animation of element.getAnimations()) {
+      animation.cancel();
+      animation.play();
+      console.log(animation);
+    }
+    // we add a bit of a delay since it feels better
+    setTimeout(() => {
+      router.push(`/${event.id}?backto=${date}`);
+    }, 100);
+
+  }
+
   const unfocused = pickedUpEvent !== null && pickedUpEvent.id !== event.id;
 
   return (
     <div ref={ref} className={`rounded-lg overflow-hidden shadow-md bg-white w-full max-w-sm transition-transform duration-200 hover:scale-102 hover:shadow-lg ${unfocused ? "scale-95 brightness-90 pointer-events-none" : ""}`}>
       <div className="relative">
-        <Link href={`/${event.id}`}>
+        <button onClick={linkClicked}>
           <img
             src={event.imageUrl}
             alt={event.title}
             className="w-full h-48 object-cover"
           />
-        </Link>
+        </button>
 
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-gray-800 font-medium px-3 py-1 rounded-full shadow-sm">
           {formatMilitaryTime(event.time)}

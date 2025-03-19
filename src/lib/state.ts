@@ -18,8 +18,3 @@ interface ElementRect {
 }
 
 export const pickedUpBoxAtom = atom<ElementRect>({ top: 0, left: 0, width: 0, height: 0 });
-
-// needs to be stored to make the animation work properly
-export const animationCardAtom = atom<Event>
-
-

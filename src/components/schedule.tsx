@@ -54,7 +54,7 @@ export function Schedule({ date, events }: { date: string, events: Event[] }) {
           {
             sortedEvents.map((event, i) => (
               <div key={i} className="top-animation">
-                <EventCard event={event} />
+                <EventCard event={event} date={date} />
               </div>
             ))
           }

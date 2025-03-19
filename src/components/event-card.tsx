@@ -10,7 +10,10 @@ import { useRouter } from "next/navigation";
 export function EventCard({ event, date }: { event: Event, date: string }) {
   const [_, setPickedUpBox] = useAtom(pickedUpBoxAtom);
   const [pickedUpEvent, setPickedUpEvent] = useAtom(pickedUpEventAtom);
+  const href = `/${event.id}?backto=${date}`;
   const router = useRouter();
+
+  router.prefetch(href)
 
   const ref = useRef<HTMLDivElement | null>(null);
   const pickUp = () => {
@@ -37,7 +40,7 @@ export function EventCard({ event, date }: { event: Event, date: string }) {
     }
     // we add a bit of a delay since it feels better
     setTimeout(() => {
-      router.push(`/${event.id}?backto=${date}`);
+      router.push(href);
     }, 100);
 
   }

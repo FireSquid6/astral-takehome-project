@@ -1,218 +1,154 @@
 "use client"
 
-import { TouchEventHandler, useRef, useState, ReactNode, createContext, useContext, Children, useEffect } from "react"
+import React, { useState, TouchEventHandler } from "react"
 
-// Context to manage active swipe card
-interface SwipeContextType {
-  activeIndex: number;
-  setActiveIndex: (index: number) => void;
-  totalItems: number;
+interface SwipeableProps {
+  children: React.ReactNode,
+  onSwipeLeft?: () => void,
+  onSwipeRight?: () => void,
+  enableSwipe?: boolean,
 }
+const minSwipeDistance = 50;
 
-const SwipeContext = createContext<SwipeContextType | null>(null);
+export function Swipeable({ children, onSwipeLeft, onSwipeRight, enableSwipe }: SwipeableProps) {
+  const [touchStart, setTouchStart] = useState<number>(0);
+  const [touchEnd, setTouchEnd] = useState<number>(0);
+  const [swiping, setSwiping] = useState<boolean>(false);
+  const [swipeOffset, setSwipeOffset] = useState(0);
 
-export function useSwipe() {
-  const context = useContext(SwipeContext);
-  if (!context) {
-    throw new Error("useSwipe must be used within a SwipeContainer");
+  const onTouchStart: TouchEventHandler = (e) => {
+    if (!enableSwipe) {
+      return;
+    }
+
+    setTouchStart(e.targetTouches[0].clientX);
+    setSwiping(true);
+    setSwipeOffset(0);
   }
-  return context;
-}
 
-interface SwipeContainerProps {
-  children: ReactNode;
-  initialIndex?: number;
-  onIndexChange?: (index: number) => void;
-}
+  const onTouchMove: TouchEventHandler = (e) => {
+    if (!touchStart || !enableSwipe) return;
 
-export function SwipeContainer({ children, initialIndex = 0, onIndexChange }: SwipeContainerProps) {
-  const [activeIndex, setActiveIndex] = useState(initialIndex);
-  const childrenArray = Children.toArray(children);
-  
-  // Update active index and call callback
-  const updateActiveIndex = (index: number) => {
-    const clampedIndex = Math.max(0, Math.min(index, childrenArray.length - 1));
-    setActiveIndex(clampedIndex);
-    onIndexChange?.(clampedIndex);
-  };
-  
-  useEffect(() => {
-    updateActiveIndex(initialIndex);
-  }, [initialIndex]);
+    const currentTouch = e.targetTouches[0].clientX;
+    setTouchEnd(currentTouch);
+
+    // Calculate offset for visual feedback during swipe
+    const offset = currentTouch - touchStart;
+    setSwipeOffset(offset);
+  }
+
+  const onTouchEnd: TouchEventHandler = () => {
+    setSwiping(false);
+    setSwipeOffset(0);
+
+    if (!touchStart || !touchEnd || !enableSwipe) return;
+
+    const distance = touchEnd - touchStart;
+    const isLeftSwipe = distance < -minSwipeDistance;
+    const isRightSwipe = distance > minSwipeDistance;
+
+    if (isLeftSwipe && onSwipeLeft) {
+      onSwipeLeft();
+    } else if (isRightSwipe && onSwipeRight) {
+      onSwipeRight();
+    }
+
+    setTouchStart(0);
+    setTouchEnd(0);
+  }
 
   return (
-    <SwipeContext.Provider 
-      value={{ 
-        activeIndex, 
-        setActiveIndex: updateActiveIndex, 
-        totalItems: childrenArray.length 
-      }}
-    >
-      <div className="w-full overflow-hidden relative">
-        {children}
-      </div>
-    </SwipeContext.Provider>
-  );
-}
-
-interface SwipableProps {
-  onSwipeLeft?: () => void;
-  onSwipeRight?: () => void;
-  children: ReactNode;
-  index: number;
-}
-
-export function Swipable({ onSwipeLeft, onSwipeRight, children, index }: SwipableProps) {
-  const { activeIndex, setActiveIndex, totalItems } = useSwipe();
-  const ref = useRef<HTMLDivElement | null>(null);
-  const touchStartX = useRef<number | null>(null);
-  const currentTranslate = useRef(0);
-  const isActive = activeIndex === index;
-  
-  // Threshold to trigger swipe (in pixels)
-  const SWIPE_THRESHOLD = 50;
-  // Animation duration (in ms)
-  const TRANSITION_DURATION = 300;
-
-  const onTouchStart: TouchEventHandler<HTMLDivElement> = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-    
-    // Remove transition during drag
-    if (ref.current) {
-      ref.current.style.transition = 'none';
-    }
-  };
-
-  const onTouchMove: TouchEventHandler<HTMLDivElement> = (e) => {
-    if (touchStartX.current === null || !isActive) return;
-    
-    const currentX = e.touches[0].clientX;
-    const diff = currentX - touchStartX.current;
-    currentTranslate.current = diff;
-    
-    // Limit how far user can swipe
-    const maxSwipe = window.innerWidth * 0.5;
-    const limitedTranslate = Math.max(Math.min(diff, maxSwipe), -maxSwipe);
-    
-    // Apply translation
-    if (ref.current) {
-      ref.current.style.transform = `translateX(${limitedTranslate}px)`;
-    }
-  };
-
-  const onTouchEnd: TouchEventHandler<HTMLDivElement> = (e) => {
-    if (touchStartX.current === null || !isActive) return;
-    
-    // Add transition for smooth return or swipe
-    if (ref.current) {
-      ref.current.style.transition = `transform ${TRANSITION_DURATION}ms ease-out`;
-    }
-    
-    if (currentTranslate.current > SWIPE_THRESHOLD) {
-      // Swipe right
-      if (index > 0) {
-        setActiveIndex(index - 1);
-        onSwipeRight?.();
-      } else {
-        resetPosition();
-      }
-    } else if (currentTranslate.current < -SWIPE_THRESHOLD) {
-      // Swipe left
-      if (index < totalItems - 1) {
-        setActiveIndex(index + 1);
-        onSwipeLeft?.();
-      } else {
-        resetPosition();
-      }
-    } else {
-      // Return to original position
-      resetPosition();
-    }
-    
-    // Reset
-    touchStartX.current = null;
-    currentTranslate.current = 0;
-  };
-  
-  const resetPosition = () => {
-    if (ref.current) {
-      ref.current.style.transform = 'translateX(0)';
-    }
-  };
-  
-  // Position the card based on active index
-  useEffect(() => {
-    if (ref.current) {
-      if (isActive) {
-        ref.current.style.transform = 'translateX(0)';
-        ref.current.style.opacity = '1';
-        ref.current.style.zIndex = '10';
-      } else if (index < activeIndex) {
-        // Card is to the left
-        ref.current.style.transform = 'translateX(-100%)';
-        ref.current.style.opacity = '0';
-        ref.current.style.zIndex = '5';
-      } else {
-        // Card is to the right
-        ref.current.style.transform = 'translateX(100%)';
-        ref.current.style.opacity = '0';
-        ref.current.style.zIndex = '5';
-      }
-    }
-  }, [activeIndex, isActive, index]);
-
-  return (
-    <div 
-      ref={ref}
-      className="absolute top-0 left-0 w-full h-full transition-transform"
-      style={{
-        transform: isActive ? 'translateX(0)' : (index < activeIndex ? 'translateX(-100%)' : 'translateX(100%)'),
-        opacity: isActive ? 1 : 0,
-        transition: `transform ${TRANSITION_DURATION}ms ease-out, opacity ${TRANSITION_DURATION}ms ease-out`,
-        zIndex: isActive ? 10 : 5
-      }}
+    <div
+      className="relative w-full h-full"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
+      style={{
+        transform: swiping ? `translateX(${swipeOffset}px)` : 'translateX(0)',
+        transition: swiping ? 'none' : 'transform 0.3s ease-out'
+      }}
     >
       {children}
     </div>
   );
 }
 
-// Optional navigation component to use with SwipeContainer
-interface SwipeNavigationProps {
-  className?: string;
+interface SwipableCarouselProps<T> {
+  items: T[],
+  renderItem: (arg0: {
+    item: T,
+    index: number,
+    isActive: boolean,
+    isPrevious: boolean,
+    isNext: boolean,
+  }) => React.ReactNode,
+  title?: string,
+  subtitle?: string,
 }
 
-export function SwipeNavigation({ className = "" }: SwipeNavigationProps) {
-  const { activeIndex, setActiveIndex, totalItems } = useSwipe();
-  
+export function SwipableCarousel<T>({ items, renderItem, title, subtitle }: SwipableCarouselProps<T>) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToPrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
+
+  const goToNext = () => {
+    if (currentIndex < items.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
+
   return (
-    <div className={`flex justify-center gap-2 mt-4 ${className}`}>
-      <button 
-        onClick={() => setActiveIndex(activeIndex - 1)}
-        disabled={activeIndex === 0}
-        className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
-      >
-        Previous
-      </button>
-      <div className="flex items-center gap-1">
-        {Array.from({ length: totalItems }).map((_, i) => (
-          <div 
-            key={i} 
-            className={`w-2 h-2 rounded-full ${activeIndex === i ? 'bg-blue-500' : 'bg-gray-300'}`}
-            onClick={() => setActiveIndex(i)}
-          />
-        ))}
+    <div className="flex flex-col items-center w-full max-w-md mx-auto h-full">
+      {(title || subtitle) && (
+        <div className="text-center mb-4 mt-2">
+          {title && <h2 className="text-xl font-bold">{title}</h2>}
+          {subtitle && <p className="text-sm text-gray-600">{subtitle}</p>}
+        </div>
+      )}
+
+      {/* Cards container */}
+      <div className="relative w-full h-96 overflow-hidden">
+        <Swipeable
+          onSwipeLeft={currentIndex < items.length - 1 ? goToNext : undefined}
+          onSwipeRight={currentIndex > 0 ? goToPrevious : undefined}
+          enableSwipe={true}
+        >
+          <div className="relative w-full h-full">
+            {items.map((item, index) => {
+                return renderItem({
+                  item,
+                  index,
+                  isActive: index === currentIndex,
+                  isPrevious: index === currentIndex - 1,
+                  isNext: index === currentIndex + 1,
+                });
+            })}
+          </div>
+        </Swipeable>
       </div>
-      <button 
-        onClick={() => setActiveIndex(activeIndex + 1)}
-        disabled={activeIndex === totalItems - 1}
-        className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
-      >
-        Next
-      </button>
+
+      {/* Navigation controls */}
+      <div className="flex justify-between items-center w-full mt-6">
+        <button
+          onClick={goToPrevious}
+          disabled={currentIndex === 0}
+          className={`px-4 py-2 rounded-full ${currentIndex === 0 ? 'bg-gray-200 text-gray-400' : 'bg-gray-800 text-white'}`}
+        >
+          Previous
+        </button>
+
+        <button
+          onClick={goToNext}
+          disabled={currentIndex === items.length - 1}
+          className={`px-4 py-2 rounded-full ${currentIndex === items.length - 1 ? 'bg-gray-200 text-gray-400' : 'bg-gray-800 text-white'}`}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }

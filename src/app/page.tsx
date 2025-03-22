@@ -32,7 +32,7 @@ export default () => {
 
   const addEvent = (event: Omit<Event, "id">, date: string) => {
     const id = uuid();
-    const newEvents = {...events};
+    const newEvents = { ...events };
 
     if (newEvents[date] === undefined) {
       newEvents[date] = [{ ...event, id }];
@@ -40,6 +40,27 @@ export default () => {
       newEvents[date].push({ ...event, id });
     }
     setEvents(newEvents);
+  }
+
+  const onNext = () => {
+    const nextMonday = new Date(datesInWeek[0]);
+    nextMonday.setUTCDate(nextMonday.getUTCDate() + 8);
+    console.log(nextMonday);
+    setDatesInWeek(getWeekOf(nextMonday));
+
+    setLastSlide("right");
+    setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);
+
+  }
+
+  const onPrevious = () => {
+    const prevMonday = new Date(datesInWeek[0]);
+    prevMonday.setUTCDate(prevMonday.getUTCDate() - 8);
+    setDatesInWeek(getWeekOf(prevMonday));
+
+    setLastSlide("left");
+    setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);
+
   }
 
   return (
@@ -59,28 +80,19 @@ export default () => {
         <WeekHeader
           first={datesInWeek[0]}
           last={datesInWeek[6]}
-          onPrevious={() => {
-            const prevMonday = new Date(datesInWeek[0]);
-            prevMonday.setUTCDate(prevMonday.getUTCDate() - 8);
-            setDatesInWeek(getWeekOf(prevMonday));
-
-            setLastSlide("left");
-            setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);
-          }}
-          onNext={() => {
-            const nextMonday = new Date(datesInWeek[0]);
-            nextMonday.setUTCDate(nextMonday.getUTCDate() + 8);
-            console.log(nextMonday);
-            setDatesInWeek(getWeekOf(nextMonday));
-
-            setLastSlide("right");
-            setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);
-          }}
+          onPrevious={onPrevious}
+          onNext={onNext}
           onAddEvent={() => {
             setModalOpen(true);
           }}
         />
-        <WeekView events={eventsForThisWeek} slideDirection={lastSlide} slideNumber={slideNumber} />
+        <WeekView 
+          events={eventsForThisWeek} 
+          slideDirection={lastSlide} 
+          slideNumber={slideNumber} 
+          onNext={onNext}
+          onPrevious={onPrevious}
+        />
       </div>
     </>
   );

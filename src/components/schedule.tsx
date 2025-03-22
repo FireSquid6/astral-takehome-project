@@ -1,13 +1,28 @@
 "use client"
 import type { Event, EventsByDate } from "@/lib/event";
 import { formatDate } from "@/lib/date";
+import { TouchEventHandler, useState } from "react";
 import { useAtom } from "jotai";
 import { eventsAtom, pickedUpEventAtom } from "@/lib/state";
 import { EventCard } from "@/components/event-card";
 
-export function Schedule({ date, events }: { date: string, events: Event[] }) {
+const MIN_DRAG = 100;
+
+export interface ScheduleProps {
+  date: string;
+  events: Event[];
+  swipable?: boolean;
+  onNavigateRight?: () => void;
+  onNavigateLeft?: () => void;
+}
+
+export function Schedule({ date, events, swipable, onNavigateLeft, onNavigateRight }: ScheduleProps) {
   const [allEvents, setEvents] = useAtom(eventsAtom);
   const [pickedUp, setPickedUp] = useAtom(pickedUpEventAtom);
+  const [touchStart, setTouchStart] = useState<number>(0);
+  const [touchEnd, setTouchEnd] = useState<number>(0);
+  const [swipeOffset, setSwipeOffset] = useState<number>(0);
+  const [swiping, setSwiping] = useState<boolean>(false);
 
   const sortedEvents = [...events].sort((a, b) => {
     return parseInt(a.time) - parseInt(b.time);
@@ -41,8 +56,55 @@ export function Schedule({ date, events }: { date: string, events: Event[] }) {
     setPickedUp(null);
   }
 
+  const onTouchStart: TouchEventHandler = (e) => {
+    if (!swipable) return;
+
+    setSwiping(true);
+    setTouchStart(e.targetTouches[0].clientX);
+
+  }
+
+  const onTouchMove: TouchEventHandler = (e) => {
+    if (!swipable || !swiping) return;
+
+    const current = e.targetTouches[0].clientX;
+    setSwipeOffset(current - touchStart);
+    setTouchEnd(current);
+  }
+
+  const onTouchEnd: TouchEventHandler = () => {
+    if (!swipable || !swiping) return;
+
+    const distance = touchEnd - touchStart;
+
+    console.log(`Finished ${distance} long drag`);
+
+    setSwiping(false);
+    setSwipeOffset(0);
+    setTouchEnd(0);
+    setTouchStart(0);
+
+    if (Math.abs(distance) >= MIN_DRAG) {
+      if (Math.sign(distance) === -1 && onNavigateRight) {
+        onNavigateRight();
+      } else if (onNavigateLeft) {
+        onNavigateLeft();
+      }
+    }
+  }
+
+  const scale = swiping ? -(1 / 100) * Math.sqrt(Math.abs(swipeOffset)) + 1 : 1;
+
   return (
-    <div className="min-w-[250x] max-w-[250px] mx-auto p-4">
+    <div
+      className="min-w-[250x] max-w-[250px] h-full mx-auto p-4"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{
+        transform: `translateX(${swipeOffset}px) scale(${scale})`,
+      }}
+    >
       <button disabled={pickedUp === null} onClick={onDropTo}>
         <h2 className={`text-2xl font-bold mb-6 transition-all ${pickedUp === null ? "text-gray-800" : "border-b-2 text-blue-400 hover:scale-105 hover:text-blue-500"
           }`}>

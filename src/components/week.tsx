@@ -18,7 +18,17 @@ function formatDayButton(dateString: string): string {
   return weekdays[date.getUTCDay()] + " " + dayOfMonth;
 };
 
-export function WeekView({ events, slideDirection, slideNumber }: { events: EventsByDate, slideDirection?: "left" | "right", slideNumber?: number }) {
+
+interface WeekViewProps {
+  events: EventsByDate,
+  slideDirection?: "left" | "right",
+  slideNumber?: number,
+  onNext?: () => void,
+  onPrevious?: () => void
+
+}
+
+export function WeekView({ events, slideDirection, slideNumber, onNext, onPrevious }: WeekViewProps) {
   const dates = Object.keys(events);
 
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || "");
@@ -57,6 +67,28 @@ export function WeekView({ events, slideDirection, slideNumber }: { events: Even
     }
   }, [dates, selectedDate]);
 
+  const onNavigate = (direction: number) => {
+    let position = dates.findIndex((date) => date === selectedDate);
+
+    // this should be impossible!
+    if (position === -1) {
+      throw new Error("State is so incredibly screwed I can't even describe what this error is");
+    }
+
+    let nextPosition = position + direction;
+
+    if (nextPosition < 0) {
+      nextPosition = 0;
+      if (onPrevious) onPrevious();
+    }
+
+    if (nextPosition >= dates.length) {
+      nextPosition = dates.length - 1;
+      if (onNext) onNext();
+    }
+
+    setSelectedDate(dates[nextPosition]);
+  }
 
 
   return (
@@ -81,9 +113,19 @@ export function WeekView({ events, slideDirection, slideNumber }: { events: Even
           </div>
 
           {/* Show the selected day */}
-          <div className="transition-opacity flex flex-col duration-300">
+          <div className="transition-opacity flex flex-col duration-300 overflow-hidden">
             <div className="mx-auto">
-              <Schedule date={selectedDate} events={events[selectedDate] || []} />
+              <Schedule 
+                onNavigateRight={() => {
+                  onNavigate(1);
+                }}
+                onNavigateLeft={() => {
+                  onNavigate(-1);
+                }}
+                swipable 
+                date={selectedDate} 
+                events={events[selectedDate] || []} 
+              />
             </div>
           </div>
         </>

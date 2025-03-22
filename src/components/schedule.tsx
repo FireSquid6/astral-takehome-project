@@ -17,7 +17,7 @@ export interface ScheduleProps {
 
   // we use the same animation logic that the week uses
   slideDirection?: "left" | "right";
-  slideNumber: number;
+  slideNumber?: number;
 }
 
 export function Schedule({ date, events, swipable, onNavigateLeft, onNavigateRight, slideDirection, slideNumber }: ScheduleProps) {
@@ -125,9 +125,9 @@ export function Schedule({ date, events, swipable, onNavigateLeft, onNavigateRig
   const scale = swiping ? -(1 / 100) * Math.sqrt(Math.abs(swipeOffset)) + 1 : 1;
 
   return (
-    <div className={animationClass} ref={ref}>
+    <div className={`flex-grow-1 flex flex-col ${animationClass}`} ref={ref}>
       <div
-        className="min-w-[250x] max-w-[250px] h-full mx-auto p-4"
+        className="min-w-[250x] max-w-[250px] flex-grow-1 mx-auto p-4"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}

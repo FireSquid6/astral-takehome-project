@@ -12,6 +12,7 @@ import { v4 as uuid } from "uuid";
 
 export default () => {
   const [events, setEvents] = useAtom(eventsAtom);
+  const [initialSelectedDate, setInitialSelectedDate] = useState<number>(0);
 
   // slide number is incremented so that we can always replay the animation
   const [lastSlide, setLastSlide] = useState<undefined | "left" | "right">(undefined);
@@ -50,7 +51,7 @@ export default () => {
 
     setLastSlide("right");
     setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);
-
+    setInitialSelectedDate(0)
   }
 
   const onPrevious = () => {
@@ -60,6 +61,7 @@ export default () => {
 
     setLastSlide("left");
     setSlideNumber(slideNumber === 100 ? 0 : slideNumber + 1);
+    setInitialSelectedDate(6)
 
   }
 
@@ -75,7 +77,7 @@ export default () => {
         }}
       />
 
-      <div className="flex flex-col">
+      <div className="flex flex-col min-h-screen">
 
         <WeekHeader
           first={datesInWeek[0]}
@@ -89,6 +91,7 @@ export default () => {
         <WeekView 
           events={eventsForThisWeek} 
           slideDirection={lastSlide} 
+          initialSelectedDate={initialSelectedDate}
           slideNumber={slideNumber} 
           onNext={onNext}
           onPrevious={onPrevious}

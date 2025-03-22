@@ -16,9 +16,6 @@ export function FloatingEvent() {
     setEvent(null);
   }
 
-  // TODO: duplicated code from EventView
-  // this will be made into a unified component at some point once
-  // I fully understand what code is repeated in each
   return (
     <div className="z-50 rotate-animation rounded-lg overflow-hidden shadow-md bg-white w-full transition-transform duration-200" style={{
       top: `${box.top}px`,

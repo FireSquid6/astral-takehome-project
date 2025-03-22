@@ -88,7 +88,6 @@ export function AddEventModal({ isOpen, onClose, onAddEvent, initialDate }: AddE
 
   if (!isOpen) return null;
 
-  // TODO - save these class names in globals.css
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-fade-in">
       <div

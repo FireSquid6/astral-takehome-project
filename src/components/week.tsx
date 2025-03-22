@@ -21,6 +21,7 @@ function formatDayButton(dateString: string): string {
 
 interface WeekViewProps {
   events: EventsByDate,
+  initialSelectedDate?: number,
   slideDirection?: "left" | "right",
   slideNumber?: number,
   onNext?: () => void,
@@ -28,14 +29,17 @@ interface WeekViewProps {
 
 }
 
-export function WeekView({ events, slideDirection, slideNumber, onNext, onPrevious }: WeekViewProps) {
+export function WeekView({ events, initialSelectedDate, slideDirection, slideNumber, onNext, onPrevious }: WeekViewProps) {
   const dates = Object.keys(events);
 
-  const [selectedDate, setSelectedDate] = useState<string>(dates[0] || "");
+  const [selectedDate, setSelectedDate] = useState<string>(dates[initialSelectedDate ?? 0] || "");
   const [scheduleSlideDirection, setScheduleSlideDirection] = useState<undefined | "left" | "right">(undefined);
   const [scheduleSlideNumber, setScheduleSlideNumber] = useState<number>(0);
   const isMobile = useAtomValue(isMobileAtom);
   const desktopRef = useRef<HTMLDivElement | null>(null);
+
+  console.log(initialSelectedDate);
+  console.log(selectedDate);
 
   const animationClass = slideDirection === undefined ? "" : `week-slide-${slideDirection}`;
 
@@ -96,7 +100,7 @@ export function WeekView({ events, slideDirection, slideNumber, onNext, onPrevio
 
 
   return (
-    <div className="mx-auto">
+    <div className="mx-auto h-full flex-grow-1 flex flex-col">
       {isMobile && (
         <>
           <div className="flex w-full overflow-x-auto">
@@ -117,8 +121,8 @@ export function WeekView({ events, slideDirection, slideNumber, onNext, onPrevio
           </div>
 
           {/* Show the selected day */}
-          <div className="transition-opacity flex flex-col duration-300 overflow-hidden">
-            <div className="mx-auto">
+          <div className="transition-opacity h-full flex-grow-1 flex flex-col duration-300 overflow-hidden flex flex-col">
+            <div className="mx-auto flex flex-col flex-grow-1">
               <Schedule 
                 slideDirection={scheduleSlideDirection}
                 slideNumber={scheduleSlideNumber}

@@ -95,10 +95,37 @@
   }
 }
 
+
+@keyframes schedule-slide-left {
+  0% {
+    transform: translateX(100px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes schedule-slide-right {
+  0% {
+    transform: translateX(-100px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 .top-animation {
   animation: slide-in-from-top 200ms forwards;
   transform: translateY(-50px);
   opacity: 0;
+}
+
+.schedule-slide-right {
+  animation: schedule-slide-right 400ms forwards;
+}
+
+.schedule-slide-left {
+  animation: schedule-slide-left 400ms forwards;
 }
 
 

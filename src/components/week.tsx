@@ -32,6 +32,8 @@ export function WeekView({ events, slideDirection, slideNumber, onNext, onPrevio
   const dates = Object.keys(events);
 
   const [selectedDate, setSelectedDate] = useState<string>(dates[0] || "");
+  const [scheduleSlideDirection, setScheduleSlideDirection] = useState<undefined | "left" | "right">(undefined);
+  const [scheduleSlideNumber, setScheduleSlideNumber] = useState<number>(0);
   const isMobile = useAtomValue(isMobileAtom);
   const desktopRef = useRef<HTMLDivElement | null>(null);
 
@@ -76,6 +78,8 @@ export function WeekView({ events, slideDirection, slideNumber, onNext, onPrevio
     }
 
     let nextPosition = position + direction;
+    setScheduleSlideDirection(direction === -1 ? "left" : "right");
+    setScheduleSlideNumber(scheduleSlideNumber === 100 ? 0 : scheduleSlideNumber + 1);
 
     if (nextPosition < 0) {
       nextPosition = 0;
@@ -116,6 +120,8 @@ export function WeekView({ events, slideDirection, slideNumber, onNext, onPrevio
           <div className="transition-opacity flex flex-col duration-300 overflow-hidden">
             <div className="mx-auto">
               <Schedule 
+                slideDirection={scheduleSlideDirection}
+                slideNumber={scheduleSlideNumber}
                 onNavigateRight={() => {
                   onNavigate(1);
                 }}
